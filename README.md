@@ -4,7 +4,7 @@
 A generic implementation of Datatables(1) server-side processing for use with the
 PHP ActiveRecord(2) library.
 
-(1) http://datatables.net
+(1) http://datatables.net  
 (2) http://www.phpactiverecord.org
 
 ## Usage
