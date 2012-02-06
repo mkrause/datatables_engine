@@ -25,8 +25,8 @@ Simple example:
     $dt = Engine_Datatables::standard(array(
         'model_class' => 'User',
         'columns' => array(
-            'username',
-            'join_date'
+            'username', // Maps to: $user->username
+            'join_date' // Maps to: $user->join_date
         ),
     ));
     
@@ -38,13 +38,16 @@ More elaborate functionality:
     $dt = Engine_Datatables::standard(array(
         'model_class' => 'User',
         'columns' => array(
+            // Maps to: $user->username
             'username',
+            // Maps to: $user->join_date with custom display
             array(
                 'name' => 'join_date',
                 'display' => function($user) {
                     return $user->join_date->format('Y-m-d');
                 }
             ),
+            // Maps to: custom MySQL expression, aliased as $user->full_name
             array(
                 'name' => 'full_name',
                 'expression' => 'CONCAT(first_name, ' ', last_name)',
