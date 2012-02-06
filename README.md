@@ -47,7 +47,7 @@ More elaborate functionality:
                     return $user->join_date->format('Y-m-d');
                 }
             ),
-            // Maps to: custom MySQL expression, aliased as $user->full_name
+            // Maps to: custom SQL expression, aliased as $user->full_name
             array(
                 'name' => 'full_name',
                 'expression' => 'CONCAT(first_name, ' ', last_name)',
