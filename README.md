@@ -28,6 +28,9 @@ Simple example:
             'join_date'
         ),
     ));
+    
+    // Output JSON reponse
+    echo $dt->output_json();
 
 More elaborate functionality:
 
@@ -50,3 +53,6 @@ More elaborate functionality:
             ),
         ),
     ));
+    
+    // Output JSON reponse
+    echo $dt->output_json();
