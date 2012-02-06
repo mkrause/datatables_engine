@@ -5,8 +5,8 @@ A generic implementation of DataTables(1) server-side processing for use with th
 PHP ActiveRecord(2) library and Roy framework.
 
 (1) http://datatables.net  
-(2) http://www.phpactiverecord.org
-(3) https://github.com/mkrause/roy 
+(2) http://www.phpactiverecord.org  
+(3) https://github.com/mkrause/roy  
 
 ## Usage
 
