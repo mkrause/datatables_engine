@@ -1,11 +1,12 @@
 
 # DataTables engine for PHP ActiveRecord
 
-A generic implementation of Datatables(1) server-side processing for use with the
-PHP ActiveRecord(2) library.
+A generic implementation of DataTables(1) server-side processing for use with the
+PHP ActiveRecord(2) library and Roy framework.
 
 (1) http://datatables.net  
 (2) http://www.phpactiverecord.org
+(3) https://github.com/mkrause/roy 
 
 ## Usage
 
@@ -48,7 +49,9 @@ More elaborate functionality:
                 'name' => 'full_name',
                 'expression' => 'CONCAT(first_name, ' ', last_name)',
                 'display' => function($user) {
-                    return '"' . $user->full_name . '"';
+                    // E.g. "JOHN DOE"
+                    $name_uppercase = strtoupper($user->full_name);
+                    return html::encode($name_uppercase);
                 }
             ),
         ),
@@ -56,3 +59,17 @@ More elaborate functionality:
     
     // Output JSON reponse
     echo $dt->output_json();
+
+## Security note
+
+The DataTables library will *not* encode any HTML contained in the data
+sent by the server. By default, Engine_Datatables will encode data using
+the following display function:
+
+    $column['display'] = function($record) use ($column) {
+        $name = $column['name'];
+        return html::encode($record->$name);
+    };
+
+If you override the display function, make sure your output is properly
+escaped.

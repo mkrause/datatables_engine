@@ -92,6 +92,14 @@ class Engine_Datatables
                 ? $column_in['display'] : null,
         );
         
+        // Default display function
+        if (!is_callable($column['display'])) {
+            $column['display'] = function($record) use ($column) {
+                $name = $column['name'];
+                return html::encode($record->$name);
+            };
+        }
+        
         return $column;
     }
     
