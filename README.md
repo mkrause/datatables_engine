@@ -2,7 +2,7 @@
 # DataTables engine for PHP ActiveRecord
 
 A generic implementation of DataTables(1) server-side processing for use with the
-PHP ActiveRecord(2) library and Roy framework.
+PHP ActiveRecord(2) library and Roy framework(3).
 
 (1) http://datatables.net  
 (2) http://www.phpactiverecord.org  
