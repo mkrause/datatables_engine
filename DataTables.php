@@ -26,17 +26,6 @@ class DataTables
     }
     
     /**
-     * Encode the given string for an HTML document.
-     * 
-     * @param
-     */
-    private static function _html_encode($html)
-    {
-        $encoding = strtoupper(Roy::config('main.encoding', 'utf-8'));
-        return htmlentities((string)$html, ENT_QUOTES, $encoding);
-    }
-    
-    /**
      * Constructor.
      * 
      * @throws DataTables_Exception
@@ -116,7 +105,9 @@ class DataTables
         if (!is_callable($column['display'])) {
             $column['display'] = function($record) use ($column) {
                 $name = $column['name'];
-                return self::_html_encode($record->$name);
+                $value = $record->$name;
+                $encoding = strtoupper(Roy::config('main.encoding', 'utf-8'));
+                return htmlentities((string)$value, ENT_QUOTES, $encoding);
             };
         }
         
