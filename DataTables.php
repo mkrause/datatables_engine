@@ -1,6 +1,7 @@
 <?php
 /**
  * Generic engine for DataTables server-side processing.
+ * https://github.com/mkrause/datatables_engine
  */
 
 class DataTables_Exception extends Exception {};
@@ -12,7 +13,7 @@ class DataTables_Exception extends Exception {};
  */
 class DataTables
 {
-    public static VERSION = '0.2';
+    const VERSION = '0.2';
     
     private $_options;
     private $_params = array();
