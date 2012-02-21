@@ -1,14 +1,19 @@
 <?php
-
-class Datatables_Exception extends RoyException {};
-
 /**
  * Generic engine for DataTables server-side processing.
+ */
+
+class DataTables_Exception extends Exception {};
+
+/**
+ * DataTables engine main class.
  * 
  * @author mkrause
  */
-class Engine_Datatables
+class DataTables
 {
+    public static VERSION = '0.2';
+    
     private $_options;
     private $_params = array();
     private $_output = null;
@@ -20,9 +25,20 @@ class Engine_Datatables
     }
     
     /**
+     * Encode the given string for an HTML document.
+     * 
+     * @param
+     */
+    private static function _html_encode($html)
+    {
+        $encoding = strtoupper(Roy::config('main.encoding', 'utf-8'));
+        return htmlentities((string)$html, ENT_QUOTES, $encoding);
+    }
+    
+    /**
      * Constructor.
      * 
-     * @throws Datatables_Exception
+     * @throws DataTables_Exception
      */
     public function __construct(array $options, array $params)
     {
@@ -33,13 +49,15 @@ class Engine_Datatables
     /**
      * Normalize and validate the given options array.
      * 
-     * @throws Datatables_Exception
+     * @throws DataTables_Exception
      */
     public function _normalize_options(array $options_in)
     {
         $options = array(
             'model_class' => isset($options_in['model_class'])
                 ? (string)$options_in['model_class'] : null,
+            'select' => isset($options_in['select'])
+                ? (array)$options_in['select'] : array(),
             'columns' => isset($options_in['columns'])
                 ? (array)$options_in['columns'] : array(),
         );
@@ -51,7 +69,8 @@ class Engine_Datatables
         } catch (NotFoundException $e) {}
         
         if (!$model_exists) {
-            throw new Datatables_Exception("No such model class '%s'.", $model_cl);
+            throw new DataTables_Exception(
+                "No such model class '" . $model_cl . "'.");
         }
         
         foreach ($options['columns'] as $key => &$col) {
@@ -64,7 +83,7 @@ class Engine_Datatables
     /**
      * Normalize and validate the given column array.
      * 
-     * @throws Datatables_Exception
+     * @throws DataTables_Exception
      */
     public function _normalize_column($key, $column_in)
     {
@@ -96,7 +115,7 @@ class Engine_Datatables
         if (!is_callable($column['display'])) {
             $column['display'] = function($record) use ($column) {
                 $name = $column['name'];
-                return html::encode($record->$name);
+                return self::_html_encode($record->$name);
             };
         }
         
@@ -117,7 +136,7 @@ class Engine_Datatables
             $name = $column['name'];
             $val = $record->$name;
         } catch (ActiveRecord\UndefinedPropertyException $e) {
-            throw new Datatables_Exception(
+            throw new DataTables_Exception(
                 "Undefined property '$column'", $e);
         }
         
@@ -143,7 +162,7 @@ class Engine_Datatables
         );
         
         // Select
-        $select_fields = array();
+        $select_fields = $options['select'];
         foreach ($options['columns'] as $idx => $col) {
             if (empty($col['expression'])) {
                 $select_fields[] = $col['name'];
@@ -184,7 +203,9 @@ class Engine_Datatables
             $model_options['conditions'] = $where;
             
             //TODO: implement a HAVING clause for columns using
-            // custom expressions
+            // custom expressions (doesn't seem to support auto-escaping...)
+            // Note: use Model::connection()->escape() instead of
+            // mysql_real_escape_string()
         }
         
         //TODO: individual column filtering
