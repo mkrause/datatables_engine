@@ -106,7 +106,7 @@ class DataTables
             $column['display'] = function($record) use ($column) {
                 $name = $column['name'];
                 $value = $record->$name;
-                $encoding = strtoupper(Roy::config('main.encoding', 'utf-8'));
+                $encoding = strtoupper('utf-8');
                 return htmlentities((string)$value, ENT_QUOTES, $encoding);
             };
         }
