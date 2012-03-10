@@ -13,7 +13,7 @@ class DataTables_Exception extends Exception {};
  */
 class DataTables
 {
-    const VERSION = '0.2';
+    const VERSION = '0.2.1';
     
     private $_options;
     private $_params = array();
@@ -99,6 +99,8 @@ class DataTables
                 ? $column_in['expression'] : null,
             'display' => isset($column_in['display'])
                 ? $column_in['display'] : null,
+            'link' => isset($column_in['link'])
+                ? $column_in['link'] : null,
         );
         
         // Default display function
@@ -106,8 +108,18 @@ class DataTables
             $column['display'] = function($record) use ($column) {
                 $name = $column['name'];
                 $value = $record->$name;
-                $encoding = strtoupper('utf-8');
-                return htmlentities((string)$value, ENT_QUOTES, $encoding);
+                $output = htmlentities((string)$value, ENT_QUOTES, 'UTF-8');
+                
+                if (is_string($column['link'])) {
+                    $output = "<a href=\"{$column['link']}\">"
+                        . $output . "</a>";
+                } elseif (is_callable($column['link'])) {
+                    $link = $column['link']($record);
+                    $output = "<a href=\"{$link}\">"
+                        . $output . "</a>";
+                }
+                
+                return $output;
             };
         }
         
@@ -170,6 +182,12 @@ class DataTables
             $col_idx = intval($params['iSortCol_' . $i]);
             $col_dir = strtolower($params['sSortDir_' . $i]) === 'asc'
                 ? 'asc' : 'desc';
+            
+            // Can't use ORDER BY on a custom expression, so skip it
+            if (!empty($options['columns'][$col_idx]['expression'])) {
+                continue;
+            }
+            
             if ($params['bSortable_' . $col_idx] == "true") {
                 $col_name = $options['columns'][$col_idx]['name'];
                 $order .= $col_name . " " . $col_dir . ", ";
