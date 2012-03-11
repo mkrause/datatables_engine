@@ -42,7 +42,7 @@ More elaborate functionality:
             'username',
             // Maps to: $user->join_date with custom display
             array(
-                'name' => 'join_date',
+                'field' => 'join_date',
                 'display' => function($user) {
                     return $user->join_date->format('Y-m-d');
                 }
@@ -67,12 +67,7 @@ More elaborate functionality:
 
 The DataTables library will *not* encode any HTML contained in the data
 sent by the server. By default, Engine_Datatables will encode data using
-the following display function:
-
-    $column['display'] = function($record) use ($column) {
-        $name = $column['name'];
-        return html::encode($record->$name);
-    };
+htmlentities().
 
 If you override the display function, make sure your output is properly
 escaped.
